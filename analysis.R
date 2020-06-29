@@ -65,7 +65,7 @@ colnames(autotyp)[which(colnames(autotyp) == 'MajorBranch')] <- 'affiliation'
 # NPs<- select(np, Glottocode,NPMarking, NPHeadlessness)
 # clausePosition<- select(clause, Glottocode, ClausePosition)
 # numClass<- select(num, Glottocode, NumClass.n)
-# autotypmeta<- select(areas, Glottocode, Area, Stock)
+# autotypmeta<- select(areas, Glottocode, Area, MajorBranch)
 # names(autotypmeta)[2]<- paste("area")
 # names(autotypmeta)[3]<- paste("affiliation")
 # 
@@ -76,7 +76,7 @@ colnames(autotyp)[which(colnames(autotyp) == 'MajorBranch')] <- 'affiliation'
 # autotyp_f <- distinct(autotyp_f)
 
 areas<- autotyp.feature("Register")
-autotypmeta<- select(areas, Glottocode, Area, Stock)
+autotypmeta<- select(areas, Glottocode, Area, MajorBranch)
 names(autotypmeta)[1]<- paste("glottocode")
 names(autotypmeta)[2]<- paste("area")
 names(autotypmeta)[3]<- paste("affiliation")
