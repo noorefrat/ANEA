@@ -1,2 +1,2 @@
 # ANEA
-[View in webpage:](https://noorefrat.github.io/ANEA/)
+[View in webpage format](https://noorefrat.github.io/ANEA/)
