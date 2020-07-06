@@ -28,7 +28,7 @@
 #' To find out if similarity is beyond average, we compare it to similarity in apart languages.
 #' 
 #data_reading
-my_data <- read.csv('~/ANEA/features_all.csv') #Read middle eastern ancient languages features
+my_data <- read.csv('~/ANEA/features.csv') #Read middle eastern ancient languages features
 
 
 feature_names<-  c("Locus.of.Marking.in.Possessive.Noun.Phrases",	"Reduplication", "Gender.n",
