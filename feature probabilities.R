@@ -593,11 +593,11 @@ for (n in f_names){
   proportion_affiliationf <- c(proportion_affiliationf, mean(outcome_affiliationf))
   proportion_both <- c(proportion_both, mean(outcome_both))
   
-  prob_area[n] <- list(rbinom(100000, 100, proportion_area)/100)
-  prob_affiliation[n] <- list(rbinom(100000, 100, proportion_affiliation)/100)
-  prob_areaf[n] <- list(rbinom(100000, 100, proportion_areaf)/100)
-  prob_affiliationf[n] <- list(rbinom(100000, 100, proportion_affiliationf)/100)
-  prob_both[n] <- list(rbinom(100000, 100, proportion_both)/100)
+  # prob_area[n] <- list(rbinom(100000, 100, proportion_area)/100)
+  # prob_affiliation[n] <- list(rbinom(100000, 100, proportion_affiliation)/100)
+  # prob_areaf[n] <- list(rbinom(100000, 100, proportion_areaf)/100)
+  # prob_affiliationf[n] <- list(rbinom(100000, 100, proportion_affiliationf)/100)
+  # prob_both[n] <- list(rbinom(100000, 100, proportion_both)/100)
   
 }
 
