@@ -156,7 +156,7 @@ subsample_max_no_languages <- function(reference.feature, reference.affiliation,
   return(reference.feature.sample)
 }
 
-#This function adopts the distribution of families and keeps the maximal number of families as possible:
+#This function adapts the distribution of families and keeps the maximal number of families as possible:
 
 subsample_max_no_families <- function(reference.feature, reference.affiliation, data.affiliation){
   #preparation:
@@ -172,7 +172,7 @@ subsample_max_no_families <- function(reference.feature, reference.affiliation, 
   #Instead of taking the maximal number of languages, we aim to take the maximal number of families.
   #Hence we have to rearrange the data in family size: e.g. if we have two families in the data with one language,
   #we have two families with size one. 
-  # For example, if we'd have: 2 with 1 language, 1 with two language and two with four languages,
+  # For example, if we'd have: one with 1 language, three with two language and two with four languages,
   # we have to prepare the reference family sizes such that we can see that e.g. we have ten with one 
   # language, thirty with *at least* two languages and twenty with *at least* four languages.
   
