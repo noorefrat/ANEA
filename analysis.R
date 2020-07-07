@@ -51,7 +51,7 @@ feature_names<-  c("Locus.of.Marking.in.Possessive.Noun.Phrases",	"Reduplication
                "Passive.Constructions", "Negative.Morphemes",	"Order.of.Negative.Morpheme.and.Verb", 
                "NPMarking", "NPHeadlessness", "ClausePosition", "NumClass.n")
 
-autotyp <- autotyp.feature(c(c("NP_structure","Clause_linkage", "Numeral_classifiers", "Register"))) 
+autotyp <- autotyp.feature(c("NP_structure","Clause_linkage", "Numeral_classifiers", "Register")) 
 colnames(autotyp)[which(colnames(autotyp) == 'Glottocode')] <- 'glottocode'
 colnames(autotyp)[which(colnames(autotyp) == 'Area')] <- 'area'
 colnames(autotyp)[which(colnames(autotyp) == 'MajorBranch')] <- 'affiliation'
