@@ -51,7 +51,7 @@ feature_names<-  c("Locus.of.Marking.in.Possessive.Noun.Phrases",	"Reduplication
                    "Passive.Constructions", "Negative.Morphemes",	"Order.of.Negative.Morpheme.and.Verb", 
                    "NPMarking", "NPHeadlessness", "ClausePosition", "NumClass.n")
 
-autotyp <- autotyp.feature(c("NP_structure","Clause_linkage", "Numeral_classifiers", "Register")) 
+autotyp <- autotyp.feature(c(c("NP_structure","Clause_linkage", "Numeral_classifiers", "Register"))) 
 colnames(autotyp)[which(colnames(autotyp) == 'Glottocode')] <- 'glottocode'
 colnames(autotyp)[which(colnames(autotyp) == 'Area')] <- 'area'
 colnames(autotyp)[which(colnames(autotyp) == 'MajorBranch')] <- 'affiliation'
@@ -136,26 +136,6 @@ subsample_max_no_families <- function(reference.feature, reference.affiliation, 
   reference.affiliation <- reference.affiliation[!is.na(reference.affiliation)]
   reference.area <- reference.area[!is.na(reference.area)]
   
-<<<<<<< HEAD
-=======
-  #now one has to sample the numbers given by reference.sample.distribution from the corresponding families:
-  family.sorted <- names(table(reference.affiliation))[match(sort(as.numeric(table(reference.affiliation)), decreasing = T), as.numeric(table(reference.affiliation)))][1:n_data]
-  reference.language.sample <- c()
-  for(u in 1:n_data){
-    reference.language.sample <- c(reference.language.sample, sample(reference.language.name[reference.affiliation == family.sorted[u]], 
-                                                                   size = reference.sample.distribution[u], replace = F))
-  }
-  reference.sample <- data.frame(reference.language.sample, reference.feature[match(reference.language.sample, reference.language.name)])
-  return(reference.feature.sample)
-}
-
-#This function adapts the distribution of families and keeps the maximal number of families as possible:
-
-subsample_max_no_families <- function(reference.feature, reference.affiliation, data.affiliation){
-  #preparation:
-  reference.feature <- reference.feature[which(!is.na(reference.feature))]
-  reference.affiliation <- reference.affiliation[which(!is.na(reference.feature))]
->>>>>>> 6de8fa5b975aa4fe94e10196d568176adbc39d9c
   data.feature <- data.feature[which(!is.na(data.feature))]
   data.affiliation <- data.affiliation[which(!is.na(data.affiliation))]
   data.distribution <- sort(as.numeric(table(data.affiliation)), decreasing = T) #Get data distribution (no. of family members)
@@ -166,7 +146,7 @@ subsample_max_no_families <- function(reference.feature, reference.affiliation, 
   #Instead of taking the maximal number of languages, we aim to take the maximal number of families.
   #Hence we have to rearrange the data in family size: e.g. if we have two families in the data with one language,
   #we have two families with size one. 
-  # For example, if we'd have: one with 1 language, three with two language and two with four languages,
+  # For example, if we'd have: 2 with 1 language, 1 with two language and two with four languages,
   # we have to prepare the reference family sizes such that we can see that e.g. we have ten with one 
   # language, thirty with *at least* two languages and twenty with *at least* four languages.
   
@@ -256,10 +236,10 @@ sample_pairwise_comparison <- function(reference.dataset, dataset, feature.name,
   proportions <- c()
   for(u in 1:n.samples){
     sample.df <- subsample_max_no_families(reference.feature = reference.dataset[,feature.name], 
-                              reference.affiliation = reference.dataset[,'affiliation'], 
-                              data.affiliation = dataset[,'affiliation'], 
-                              reference.area = reference.dataset[,'area'], 
-                              reference.name = reference.dataset[,'language'])
+                                           reference.affiliation = reference.dataset[,'affiliation'], 
+                                           data.affiliation = dataset[,'affiliation'], 
+                                           reference.area = reference.dataset[,'area'], 
+                                           reference.name = reference.dataset[,'language'])
     
     proportions <- c(proportions, pairwise_comparison(feature = sample.df$feature, area = sample.df$area, 
                                                       name = sample.df$name, affiliation = sample.df$affiliation, 
@@ -325,7 +305,7 @@ passive.const.df <- my_data %>% select('Gender.n', 'language', 'area', 'affiliat
 pairwise_comparison(feature = passive.const.df[,'Gender.n'], area = passive.const.df$area, 
                     name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
                     separate_affiliations = F, separate_areas = F)
-                                
+
 
 
 
