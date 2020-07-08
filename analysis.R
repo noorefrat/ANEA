@@ -117,26 +117,28 @@ anea <- merge(reference, my_data, all = T, by = colnames(my_data)[which(colnames
 
 
 
-test.ref <-  wals %>% select(Passive.Constructions, area, affiliation, language) %>% drop_na()
-test.dat <- my_data %>% select(Passive.Constructions, area, affiliation, language) %>% drop_na() 
-
-
 subsample_max_no_families <- function(reference.feature, reference.affiliation, reference.name, reference.area, data.affiliation){
-  #preparation:
-  reference.affiliation <- reference.affiliation[!is.na(reference.feature)]
-  reference.name <- reference.name[!is.na(reference.feature)]
-  reference.area <- reference.area[!is.na(reference.feature)]
-  reference.feature <- reference.feature[!is.na(reference.feature)]
-  reference.feature <- reference.feature[!is.na(reference.affiliation)] #some affiliations in wals are unknown so <-
-  reference.name <- reference.name[!is.na(reference.affiliation)]
-  reference.area <- reference.area[!is.na(reference.affiliation)]
-  reference.affiliation <- reference.affiliation[!is.na(reference.affiliation)]
-  reference.feature <- reference.feature[!is.na(reference.area)] #some areas in wals are unknown so <-
-  reference.name <- reference.name[!is.na(reference.affiliation)]
-  reference.affiliation <- reference.affiliation[!is.na(reference.affiliation)]
-  reference.area <- reference.area[!is.na(reference.area)]
+  df <- data.frame(reference.affiliation, reference.name, reference.area, reference.feature)
+  df <- df %>% drop_na %>% filter(reference.affiliation != "")
+  reference.affiliation <- df$reference.affiliation
+  reference.area <- df$reference.area
+  reference.name <- df$reference.name
+  reference.feature <- df$reference.feature
   
-  data.feature <- data.feature[which(!is.na(data.feature))]
+  #preparation:
+  # reference.affiliation <- reference.affiliation[!is.na(reference.feature)]
+  # reference.name <- reference.name[!is.na(reference.feature)]
+  # reference.area <- reference.area[!is.na(reference.feature)]
+  # reference.feature <- reference.feature[!is.na(reference.feature)]
+  # reference.feature <- reference.feature[!is.na(reference.affiliation)] #some affiliations in wals are unknown so <-
+  # reference.name <- reference.name[!is.na(reference.affiliation)]
+  # reference.area <- reference.area[!is.na(reference.affiliation)]
+  # reference.affiliation <- reference.affiliation[!is.na(reference.affiliation)]
+  # reference.feature <- reference.feature[!is.na(reference.area)] #some areas in wals are unknown so <-
+  # reference.name <- reference.name[!is.na(reference.affiliation)]
+  # reference.affiliation <- reference.affiliation[!is.na(reference.affiliation)]
+  # reference.area <- reference.area[!is.na(reference.area)]
+  
   data.affiliation <- data.affiliation[which(!is.na(data.affiliation))]
   data.distribution <- sort(as.numeric(table(data.affiliation)), decreasing = T) #Get data distribution (no. of family members)
   
@@ -156,6 +158,7 @@ subsample_max_no_families <- function(reference.feature, reference.affiliation, 
   reference.family.distribution.capacity <- c()
   reference.capacity.names <- data.frame(name = 'test', capacity = 0) #just an empty first row
   for(u in 1:length(data.family.distribution)){
+    print(u)
     if(u == length(data.family.distribution)){
       temp <- sum(reference.family.distribution[which(reference.family.distribution.size >= data.family.distribution.size[u])])
       temp.name <- names(which(table(reference.affiliation) >= data.family.distribution.size[u]))
@@ -176,11 +179,11 @@ subsample_max_no_families <- function(reference.feature, reference.affiliation, 
   reference.language.sample <- c()
   for(u in 1:nrow(reference.sample.family.distribution)){
     #First step: sample languages
-    family.names.tobesampled <- sample(reference.capacity.names$name[which(reference.capacity.names$capacity == reference.sample.family.distribution$family.size[u])], 
-                                       reference.sample.family.distribution$family.samples, replace = FALSE)
+    family.names.tobesampled <- sample(reference.capacity.names$name[reference.capacity.names$capacity == reference.sample.family.distribution$family.size[u]], 
+                                       reference.sample.family.distribution$family.samples[u], replace = FALSE)
     #Second step: sample features from those languages
     for(k in family.names.tobesampled){
-      temp.language.sample <- sample(reference.name[which(reference.affiliation == k)], reference.sample.family.distribution$family.size[u], replace = FALSE)
+      temp.language.sample <- sample(reference.name[reference.affiliation == k], reference.sample.family.distribution$family.size[u], replace = FALSE)
       reference.language.sample <- c(reference.language.sample, temp.language.sample)
     }
   }
@@ -195,31 +198,36 @@ subsample_max_no_families <- function(reference.feature, reference.affiliation, 
 #A function to compute proportion of identical pairs of features. It allows to only compute pairs from different families (affiliations) and
 #pairs from separate areas. feature, name, area and affiliation must correspond in their order, e.g. area[1] must belong to name[1].
 pairwise_comparison <- function(feature, name, area, affiliation, separate_areas = FALSE, identical_areas = FALSE, separate_affiliations = FALSE){
+  df <- data.frame(feature, name, area, affiliation) %>% drop_na
+  area <- df$area
+  feature <- df$feature
+  affiliation <- df$affiliation
+  name <- df$name
+  pairwise.match = c()
   if(separate_areas == TRUE){
-    pairwise.match = c()
-    if(separate_affiliations ==  TRUE) {
-      print('Either separate_areas or separate_affiliations can be TRUE, not both')
-      stop()
-    }
     for(u in 1:length(feature)){
-      separate.area.feature <- feature[area != area[u]]
-      pairwise.match <- c(pairwise.match, feature[u] == separate.area.feature)
+      if(length(which(area != area[u])) > 0){
+      pairwise.match <- c(pairwise.match, feature[u] == feature[area != area[u]])
     }
-  } else{
-    pairwise.match = c()
-    if(separate_affiliations == FALSE){
-      for(u in 1:length(feature)){
-        pairwise.match <- c(pairwise.match, feature[u] == feature[-u])
-      }
-    } else{
-      separate.affiliation.feature <- feature[affiliation != affiliation[u]]
-      pairwise.match <- c(pairwise.match, feature[u] == separate.affiliation.feature)
+    }
+  } 
+  if(separate_affiliations == FALSE & separate_areas == FALSE & identical_areas == FALSE){
+    for(u in 1:length(feature)){
+      pairwise.match <- c(pairwise.match, feature[u] == feature[-u])
+    }
+  } 
+  if(separate_affiliations == TRUE){
+    for(u in 1:length(feature)){
+      if(length(which(affiliation != affiliation[u])) > 0){
+    pairwise.match <- c(pairwise.match, feature[u] == feature[affiliation != affiliation[u]])
+    }
     }
   }
   if(identical_areas == TRUE){
     for(u in 1:length(feature)){
-      identical.area.feature <- feature[area == area[u]]
-      pairwise.match <- c(pairwise.match, feature[u] == identical.area.feature)
+      if(length(which(area == area[u])) > 1){
+      pairwise.match <- c(pairwise.match, feature[u] == feature[area == area[u] & name != name[u]])
+    }
     }
   }
   return(sum(pairwise.match)/length(pairwise.match))
@@ -249,16 +257,16 @@ sample_pairwise_comparison <- function(reference.dataset, dataset, feature.name,
   return(proportions)
 }
 
-#Plotting function for doing the above plot with wals features: (using less than 1000 n.samples not recommended)
+#Plotting function for comparing feature parity: (note: using less than ~40000 n.samples will give some sampling error)
 
 compare_proportions <- function(feature.name, n.samples, ylim){
-  prop.sample <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+  prop.sample <- sample_pairwise_comparison(reference.dataset = reference, dataset = my_data, 
                                             feature.name = feature.name, 
                                             n.samples = n.samples, separate_areas = T, separate_affiliations = F)
-  prop.sample.separate_affiliation <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+  prop.sample.separate_affiliation <- sample_pairwise_comparison(reference.dataset = reference, dataset = my_data, 
                                                                  feature.name = feature.name, 
                                                                  n.samples = n.samples, separate_areas = F, separate_affiliations = T)
-  prop.sample.identical_areas <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+  prop.sample.identical_areas <- sample_pairwise_comparison(reference.dataset = reference, dataset = my_data, 
                                                             feature.name = feature.name, 
                                                             n.samples = n.samples, separate_areas = F, separate_affiliations = F, identical_areas = T)
   
@@ -285,20 +293,64 @@ compare_proportions <- function(feature.name, n.samples, ylim){
 }
 
 
-#The problem with using less than 1000 n.samples:
+#The problem with using less than 40000 n.samples:
 
 par(mfrow = c(1,2))
-compare_proportions('Gender.n', n.samples = 100, ylim = 4)
-compare_proportions('Gender.n', n.samples = 100, ylim = 4)
+compare_proportions('Gender.n', n.samples = 100, ylim = 10)
+compare_proportions('Gender.n', n.samples = 100, ylim = 10)
 
-#Better:
+compare_proportions('Gender.n', n.samples = 100, ylim = 10)
+compare_proportions('Gender.n', n.samples = 100, ylim = 10)
+
+compare_proportions('NPAgrCat', n.samples = 500, ylim = 17)
+compare_proportions('NPAgrCat', n.samples = 500, ylim = 17)
+
+#Better, still not perfect (runtime ~20 min):
 par(mfrow = c(1,2))
-compare_proportions('Gender.n', n.samples = 5000, ylim = 4)
-compare_proportions('Gender.n', n.samples = 5000, ylim = 4)
+compare_proportions('Gender.n', n.samples = 20000, ylim = 4)
+compare_proportions('Gender.n', n.samples = 20000, ylim = 4)
 
 compare_proportions('Passive.Constructions', n.samples = 100, ylim = 40)
 compare_proportions('Gender.n', n.samples = 1000, ylim = 4)
 
+
+
+
+#Get a quick overview over percentage of proportions larger than the reference (same area):
+#A lot of features habe to few data for the code to work:
+colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][c(59, 1,2,3,4,5,6,7,8,11,19,20,22,42,47,50,52,54,55,56,57)]
+larger.prop <- c()
+n.samples.overview <- 50
+for(u in colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][-c(59, 1,2,3,4,5,6,7,8,11,19,20,22,42,47,50,52,54,55,56,57)]){
+  print(u)
+  prop.sample <- sample_pairwise_comparison(reference.dataset = reference, dataset = my_data, 
+                                            feature.name = u, n.samples = n.samples.overview, separate_areas = F, 
+                                            separate_affiliations = F, identical_areas = T)
+  prop.data <- pairwise_comparison(feature = my_data[,u], area = my_data$area, 
+                      name = my_data$language, affiliation = my_data$affiliation, 
+                      separate_affiliations = F, separate_areas = F)
+  print(prop.data)
+  print(mean(prop.sample))
+  print(range(prop.sample))
+  
+  larger.prop <- c(larger.prop, length(which(prop.sample > prop.data))/n.samples.overview)
+}
+results <- data.frame(feature = colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][-c(59, 1,2,3,4,5,6,7,8,11,19,20,22,42,47,50,52,54,55,56,57)], percentage = larger.prop*100)
+results
+
+
+
+
+
+
+
+
+
+
+
+
+
+#--------------------------------------------------------------------------------------------------------------#
 
 passive.const.df <- my_data %>% select('Gender.n', 'language', 'area', 'affiliation') %>% drop_na()
 
@@ -310,38 +362,38 @@ pairwise_comparison(feature = passive.const.df[,'Gender.n'], area = passive.cons
 
 
 # Investigate passive proportions with larger n.samples
-# prop.sample <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
-#                                           feature.name = 'Passive.Constructions', 
-#                                           n.samples = 10000, separate_areas = T, separate_affiliations = F)
-# prop.sample.separate_affiliation <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
-#                                                                feature.name = 'Passive.Constructions', 
-#                                                                n.samples = 10000, separate_areas = F, separate_affiliations = T)
-# prop.sample.identical_areas <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
-#                                                           feature.name = 'Passive.Constructions', 
-#                                                           n.samples = 10000, separate_areas = F, separate_affiliations = F, identical_areas = T)
-# 
-# passive.const.df <- my_data %>% select(Passive.Constructions, language, area, affiliation) %>% drop_na()
-# 
-# # hist(prop.sample, nclass = 100, xlim= c(0, 1), col = rgb(0,.4,.4, .5), freq = F)
-# # hist(prop.sample.separate_affiliation, nclass = 100, xlim= c(0.25, 0.85), col = rgb(.4,0,.4, .5), add = T, freq = F)
-# 
-# plot(density(prop.sample.separate_affiliation), xlim= c(0.25, 1), ylim = c(0, 40), col = 2, lwd = 1.5, main = 'Passive Constructions')
-# lines(density(prop.sample), xlim= c(0.25, 0.85),  col = 1, lwd = 1.5)
-# lines(density(prop.sample.identical_areas), xlim= c(0.25, 0.85),  col = 3, lwd= 1.5)
-# points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area, 
-#                                name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
-#                                separate_affiliations = F, separate_areas = F), y = 15, type = 'h', col = 5, lty = 2, lwd = 2)
-# points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area, 
-#                                name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
-#                                separate_affiliations = F, separate_areas = F), y = 15, col = 5, lty = 2, lwd = 2)
-# points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area, 
-#                                name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
-#                                separate_affiliations = T, separate_areas = F), y = 15, type = 'h', col = 4, lty = 2, lwd = 2)
-# points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area, 
-#                                name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
-#                                separate_affiliations = T, separate_areas = F), y = 15, col = 4, lty = 2, lwd = 2)
-# legend(legend = c('wals diff. affiliations', 'wals diff. areas', 'wals same area', 'anea', 'anea diff. affiliations'), 
-#        col = c(2,1,3,5,4), lwd = c(1.5, 1.5, 1.5, 2,2), lty = c(1,1,1,2,2), 'topright')
+prop.sample <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data,z
+                                          feature.name = 'Gender.n',
+                                          n.samples = 100, separate_areas = T, separate_affiliations = F)
+prop.sample.separate_affiliation <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data,
+                                                               feature.name = 'Passive.Constructions',
+                                                               n.samples = 100, separate_areas = F, separate_affiliations = T)
+prop.sample.identical_areas <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data,
+                                                          feature.name = 'Gender.n',
+                                                          n.samples = 100, separate_areas = F, separate_affiliations = F, identical_areas = T)
+
+passive.const.df <- my_data %>% select(Passive.Constructions, Gender.n, language, area, affiliation) %>% drop_na()
+
+# hist(prop.sample, nclass = 100, xlim= c(0, 1), col = rgb(0,.4,.4, .5), freq = F)
+# hist(prop.sample.separate_affiliation, nclass = 100, xlim= c(0.25, 0.85), col = rgb(.4,0,.4, .5), add = T, freq = F)
+
+plot(density(prop.sample.separate_affiliation), xlim= c(0.25, 1), ylim = c(0, 40), col = 2, lwd = 1.5, main = 'Passive Constructions')
+lines(density(prop.sample), xlim= c(0.25, 0.85),  col = 1, lwd = 1.5)
+lines(density(prop.sample.identical_areas), xlim= c(0.25, 0.85),  col = 3, lwd= 1.5)
+points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area,
+                               name = passive.const.df$name, affiliation = passive.const.df$affiliation,
+                               separate_affiliations = F, separate_areas = F), y = 15, type = 'h', col = 5, lty = 2, lwd = 2)
+points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area,
+                               name = passive.const.df$name, affiliation = passive.const.df$affiliation,
+                               separate_affiliations = F, separate_areas = F), y = 15, col = 5, lty = 2, lwd = 2)
+points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area,
+                               name = passive.const.df$name, affiliation = passive.const.df$affiliation,
+                               separate_affiliations = T, separate_areas = F), y = 15, type = 'h', col = 4, lty = 2, lwd = 2)
+points(x = pairwise_comparison(feature = passive.const.df$Gender.n, area = passive.const.df$area,
+                               name = passive.const.df$name, affiliation = passive.const.df$affiliation,
+                               separate_affiliations = T, separate_areas = F), y = 15, col = 4, lty = 2, lwd = 2)
+legend(legend = c('wals diff. affiliations', 'wals diff. areas', 'wals same area', 'anea', 'anea diff. affiliations'),
+       col = c(2,1,3,5,4), lwd = c(1.5, 1.5, 1.5, 2,2), lty = c(1,1,1,2,2), 'topright')
 
 
 
