@@ -32,24 +32,24 @@ my_data <- read.csv('~/ANEA/features.csv') #Read middle eastern ancient language
 
 
 feature_names<-  c("Locus.of.Marking.in.Possessive.Noun.Phrases",	"Reduplication", "Gender.n",
-               "Systems.of.Gender.Assignment",	"Nominal.Plurality",	"Definite.Articles",
-               "Indefinite.Articles",	"Distance.Contrasts.in.Demonstratives",	
-               "Pronominal.and.Adnominal.Demonstratives",	"Third.Person.Pronouns.and.Demonstratives",	
-               "Gender.Distinctions.in.Independent.Personal.Pronouns",	"Indefinite.Pronouns",	
-               "Intensifiers.and.Reflexive.Pronouns", "Person.Marking.on.Adpositions",	
-               "Comitatives.and.Instrumentals",	"Ordinal.Numerals",	"Distributive.Numerals",
-               "Position.of.Pronominal.Possessive.Affixes",	"Possessive.Classification",	
-               "Noun.Phrase.Conjunction",	"Nominal.and.Verbal.Conjunction",	
-               "Perfective.Imperfective.Aspect",	"The.Past.Tense",	"The.Future.Tense",	
-               "The.Morphological.Imperative",	"The.Prohibitive",	"Optative",	"WordOrderSOV",
-               "Order.of.Object..Oblique..and.Verb",	"Order.of.Adposition.and.Noun.Phrase",	
-               "Order.of.Genitive.and.Noun",	"Order.of.Adjective.and.Noun",	"Order.of.Demonstrative.and.Noun",	
-               "Order.of.Numeral.and.Noun",	"Order.of.Relative.Clause.and.Noun",	"Order.of.Degree.Word.and.Adjective",	
-               "Position.of.Polar.Question.Particles",	"Position.of.Interrogative.Phrases.in.Content.Questions",	
-               "Alignment.of.Case.Marking.of.Full.Noun.Phrases",	"Alignment.of.Case.Marking.of.Pronouns",	
-               "Expression.of.Pronominal.Subjects",	"Verbal.Person.Marking",	"Reciprocal.Constructions",	
-               "Passive.Constructions", "Negative.Morphemes",	"Order.of.Negative.Morpheme.and.Verb", 
-               "NPMarking", "NPHeadlessness", "ClausePosition", "NumClass.n")
+                   "Systems.of.Gender.Assignment",	"Nominal.Plurality",	"Definite.Articles",
+                   "Indefinite.Articles",	"Distance.Contrasts.in.Demonstratives",	
+                   "Pronominal.and.Adnominal.Demonstratives",	"Third.Person.Pronouns.and.Demonstratives",	
+                   "Gender.Distinctions.in.Independent.Personal.Pronouns",	"Indefinite.Pronouns",	
+                   "Intensifiers.and.Reflexive.Pronouns", "Person.Marking.on.Adpositions",	
+                   "Comitatives.and.Instrumentals",	"Ordinal.Numerals",	"Distributive.Numerals",
+                   "Position.of.Pronominal.Possessive.Affixes",	"Possessive.Classification",	
+                   "Noun.Phrase.Conjunction",	"Nominal.and.Verbal.Conjunction",	
+                   "Perfective.Imperfective.Aspect",	"The.Past.Tense",	"The.Future.Tense",	
+                   "The.Morphological.Imperative",	"The.Prohibitive",	"Optative",	"WordOrderSOV",
+                   "Order.of.Object..Oblique..and.Verb",	"Order.of.Adposition.and.Noun.Phrase",	
+                   "Order.of.Genitive.and.Noun",	"Order.of.Adjective.and.Noun",	"Order.of.Demonstrative.and.Noun",	
+                   "Order.of.Numeral.and.Noun",	"Order.of.Relative.Clause.and.Noun",	"Order.of.Degree.Word.and.Adjective",	
+                   "Position.of.Polar.Question.Particles",	"Position.of.Interrogative.Phrases.in.Content.Questions",	
+                   "Alignment.of.Case.Marking.of.Full.Noun.Phrases",	"Alignment.of.Case.Marking.of.Pronouns",	
+                   "Expression.of.Pronominal.Subjects",	"Verbal.Person.Marking",	"Reciprocal.Constructions",	
+                   "Passive.Constructions", "Negative.Morphemes",	"Order.of.Negative.Morpheme.and.Verb", 
+                   "NPMarking", "NPHeadlessness", "ClausePosition", "NumClass.n")
 
 autotyp <- autotyp.feature(c(c("NP_structure","Clause_linkage", "Numeral_classifiers", "Register"))) 
 colnames(autotyp)[which(colnames(autotyp) == 'Glottocode')] <- 'glottocode'
@@ -84,12 +84,13 @@ names(autotypmeta)[3]<- paste("affiliation")
 
 
 f_names <- c("24a","27a","30a","32a","33a","37a","38a","41a","42a","43a","44a","46a",
-                "47a","48a","52a","53a","54a","57a","59a","63a","64a","65a","66a","67a",
-                "70a","71a","73a","81a","84a","85a","86a","87a","88a","89a","90a","91a",
-                "92a","93a","98a", "99a","101a","102a","106a","107a","112a","143a")
+             "47a","48a","52a","53a","54a","57a","59a","63a","64a","65a","66a","67a",
+             "70a","71a","73a","81a","84a","85a","86a","87a","88a","89a","90a","91a",
+             "92a","93a","98a", "99a","101a","102a","106a","107a","112a","143a")
 
 temp_w <- wals.feature(f_names)
-wals <- merge(temp_w, autotypmeta, by= "glottocode")
+wals <- merge(temp_w, autotypmeta, by= "glottocode", all.x = T)
+wals <- wals %>% distinct(language, .keep_all = T)
 colnames(wals)[5:50] <- c("Locus.of.Marking.in.Possessive.Noun.Phrases",	"Reduplication", "Gender.n", "Systems.of.Gender.Assignment",	
                           "Nominal.Plurality",	"Definite.Articles",	"Indefinite.Articles",	"Distance.Contrasts.in.Demonstratives",	
                           "Pronominal.and.Adnominal.Demonstratives",	"Third.Person.Pronouns.and.Demonstratives",	
@@ -115,53 +116,26 @@ anea <- merge(reference, my_data, all = T, by = colnames(my_data)[which(colnames
 
 
 
-reference.feature <- wals$Passive.Constructions
-reference.language.name <- wals$language
-reference.glottocode <- wals$glottocode
-reference.affiliation <- wals$affiliation
-data.feature <- my_data$Passive.Constructions
-data.affiliation <- my_data$affiliation
+
+test.ref <-  wals %>% select(Passive.Constructions, area, affiliation, language) %>% drop_na()
+test.dat <- my_data %>% select(Passive.Constructions, area, affiliation, language) %>% drop_na() 
 
 
-#The below functions do choose a subset from the reference features in order to get the 
-#same distribution of family sizes as in the reference data set. So if we have three families in the
-#data with 3, 2 and a single language, we want to have the same proportions of languages in the families
-#in the reference dataset. So we have the take a subset of the reference data.
-
-#We want to throw away as few data as possible, but we have to decide if we want to 
-#throw away as few languages or families as possible. The function below does the former:
-
-subsample_max_no_languages <- function(reference.feature, reference.affiliation, reference.language.name, data.affiliation){
+subsample_max_no_families <- function(reference.feature, reference.affiliation, reference.name, reference.area, data.affiliation){
   #preparation:
   reference.affiliation <- reference.affiliation[!is.na(reference.feature)]
-  reference.language.name <- reference.language.name[!is.na(reference.feature)]
-  reference.glottocode <- reference.glottocode[!is.na(reference.feature)]
+  reference.name <- reference.name[!is.na(reference.feature)]
+  reference.area <- reference.area[!is.na(reference.feature)]
   reference.feature <- reference.feature[!is.na(reference.feature)]
-  data.affiliation <- data.affiliation[!is.na(data.affiliation)]
-  data.distribution <- sort(as.numeric(table(data.affiliation)), decreasing = T) #Get data distribution (no. of family members)
-  reference.distribution <- sort(as.numeric(table(reference.affiliation)), decreasing = T)
+  reference.feature <- reference.feature[!is.na(reference.affiliation)] #some affiliations in wals are unknown so <-
+  reference.name <- reference.name[!is.na(reference.affiliation)]
+  reference.area <- reference.area[!is.na(reference.affiliation)]
+  reference.affiliation <- reference.affiliation[!is.na(reference.affiliation)]
+  reference.feature <- reference.feature[!is.na(reference.area)] #some areas in wals are unknown so <-
+  reference.name <- reference.name[!is.na(reference.affiliation)]
+  reference.affiliation <- reference.affiliation[!is.na(reference.affiliation)]
+  reference.area <- reference.area[!is.na(reference.area)]
   
-  #actual calculation: take the n_data largest families in the reference data and divide through the data distribution
-  n_data <- length(data.distribution)
-  reference.sample.distribution <- (floor(min(reference.distribution[1:n_data]/data.distribution)) * data.distribution)
-  
-  #now one has to sample the numbers given by reference.sample.distribution from the corresponding families:
-  family.sorted <- names(table(reference.affiliation))[match(sort(as.numeric(table(reference.affiliation)), decreasing = T), as.numeric(table(reference.affiliation)))][1:n_data]
-  reference.language.sample <- c()
-  for(u in 1:n_data){
-    reference.language.sample <- c(reference.language.sample, sample(reference.language.name[reference.affiliation == family.sorted[u]], 
-                                                                   size = reference.sample.distribution[u], replace = F))
-  }
-  reference.sample <- data.frame(reference.language.sample, reference.feature[match(reference.language.sample, reference.language.name)])
-  return(reference.feature.sample)
-}
-
-#This function adopts the distribution of families and keeps the maximal number of families as possible:
-
-subsample_max_no_families <- function(reference.feature, reference.affiliation, data.affiliation){
-  #preparation:
-  reference.feature <- reference.feature[which(!is.na(reference.feature))]
-  reference.affiliation <- reference.affiliation[which(!is.na(reference.feature))]
   data.feature <- data.feature[which(!is.na(data.feature))]
   data.affiliation <- data.affiliation[which(!is.na(data.affiliation))]
   data.distribution <- sort(as.numeric(table(data.affiliation)), decreasing = T) #Get data distribution (no. of family members)
@@ -189,9 +163,9 @@ subsample_max_no_families <- function(reference.feature, reference.affiliation, 
       temp <- sum(reference.family.distribution[which(reference.family.distribution.size >= data.family.distribution.size[u] & 
                                                         reference.family.distribution.size < data.family.distribution.size[u + 1])])
       temp.name <- names(which(table(reference.affiliation) >= data.family.distribution.size[u] & 
-                            table(reference.affiliation) < data.family.distribution.size[u + 1]))
+                                 table(reference.affiliation) < data.family.distribution.size[u + 1]))
     }
-   
+    
     reference.family.distribution.capacity <- c(reference.family.distribution.capacity, temp)
     reference.capacity.names = rbind(reference.capacity.names, data.frame(name = temp.name, capacity = data.family.distribution.size[u]))
   }
@@ -199,31 +173,175 @@ subsample_max_no_families <- function(reference.feature, reference.affiliation, 
                                                     family.size = data.family.distribution.size)
   
   #Take the distribution adjusted reference sample:
-  reference.feature.sample <- c()
+  reference.language.sample <- c()
   for(u in 1:nrow(reference.sample.family.distribution)){
     #First step: sample languages
     family.names.tobesampled <- sample(reference.capacity.names$name[which(reference.capacity.names$capacity == reference.sample.family.distribution$family.size[u])], 
                                        reference.sample.family.distribution$family.samples, replace = FALSE)
     #Second step: sample features from those languages
     for(k in family.names.tobesampled){
-      temp.feature.sample <- sample(reference.feature[which(reference.affiliation == k)], reference.sample.family.distribution$family.size[u], replace = FALSE)
-      reference.feature.sample <- c(reference.feature.sample, temp.feature.sample)
+      temp.language.sample <- sample(reference.name[which(reference.affiliation == k)], reference.sample.family.distribution$family.size[u], replace = FALSE)
+      reference.language.sample <- c(reference.language.sample, temp.language.sample)
     }
   }
-  return(reference.feature.sample)
+  reference.sample <- data.frame(name = reference.language.sample, feature = reference.feature[match(reference.language.sample, reference.name)], 
+                                 area = reference.area[match(reference.language.sample, reference.name)], 
+                                 affiliation = reference.affiliation[match(reference.language.sample, reference.name)])
+  return(reference.sample)
 }
 
-subsample_max_no_families(wals$Passive.Constructions, reference.affiliation = wals$affiliation, data.affiliation = my_data$affiliation)
-ref.sample <- subsample_max_no_languages(wals$Passive.Constructions, reference.affiliation = wals$affiliation, data.affiliation = my_data$affiliation)
-dat <- my_data$Passive.Constructions[!is.na(my_data$Passive.Constructions)]
 
 
-get_agreement <- function(reference.feature, reference.affiliation, data.affiliation, data.feature){
-  data.feature <- data.feature[!is.na(data.feature)]
-  reference.feature.sample <- subsample_max_no_families(wals$Passive.Constructions, reference.affiliation = wals$affiliation, data.affiliation = my_data$affiliation)
-  
-  for(u in 1:length(data.feature)){
-    
+#A function to compute proportion of identical pairs of features. It allows to only compute pairs from different families (affiliations) and
+#pairs from separate areas. feature, name, area and affiliation must correspond in their order, e.g. area[1] must belong to name[1].
+pairwise_comparison <- function(feature, name, area, affiliation, separate_areas = FALSE, identical_areas = FALSE, separate_affiliations = FALSE){
+  if(separate_areas == TRUE){
+    pairwise.match = c()
+    if(separate_affiliations ==  TRUE) {
+      print('Either separate_areas or separate_affiliations can be TRUE, not both')
+      stop()
+    }
+    for(u in 1:length(feature)){
+      separate.area.feature <- feature[area != area[u]]
+      pairwise.match <- c(pairwise.match, feature[u] == separate.area.feature)
+    }
+  } else{
+    pairwise.match = c()
+    if(separate_affiliations == FALSE){
+      for(u in 1:length(feature)){
+        pairwise.match <- c(pairwise.match, feature[u] == feature[-u])
+      }
+    } else{
+      separate.affiliation.feature <- feature[affiliation != affiliation[u]]
+      pairwise.match <- c(pairwise.match, feature[u] == separate.affiliation.feature)
+    }
   }
+  if(identical_areas == TRUE){
+    for(u in 1:length(feature)){
+      identical.area.feature <- feature[area == area[u]]
+      pairwise.match <- c(pairwise.match, feature[u] == identical.area.feature)
+    }
+  }
+  return(sum(pairwise.match)/length(pairwise.match))
 }
+
+
+
+
+
+#Function to which a dataframe and feature name together with separate_area and _affiliation arguments can be passed.
+#Does n.samples iterations of the distribution restriction of the reference dataset.
+sample_pairwise_comparison <- function(reference.dataset, dataset, feature.name, n.samples, separate_areas = FALSE, 
+                                       identical_areas = FALSE, separate_affiliations = FALSE){
+  proportions <- c()
+  for(u in 1:n.samples){
+    sample.df <- subsample_max_no_families(reference.feature = reference.dataset[,feature.name], 
+                              reference.affiliation = reference.dataset[,'affiliation'], 
+                              data.affiliation = dataset[,'affiliation'], 
+                              reference.area = reference.dataset[,'area'], 
+                              reference.name = reference.dataset[,'language'])
+    
+    proportions <- c(proportions, pairwise_comparison(feature = sample.df$feature, area = sample.df$area, 
+                                                      name = sample.df$name, affiliation = sample.df$affiliation, 
+                                                      separate_affiliations = separate_affiliations, separate_areas = separate_areas,
+                                                      identical_areas = identical_areas))
+  }
+  return(proportions)
+}
+
+#Plotting function for doing the above plot with wals features: (using less than 1000 n.samples not recommended)
+
+compare_proportions <- function(feature.name, n.samples, ylim){
+  prop.sample <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+                                            feature.name = feature.name, 
+                                            n.samples = n.samples, separate_areas = T, separate_affiliations = F)
+  prop.sample.separate_affiliation <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+                                                                 feature.name = feature.name, 
+                                                                 n.samples = n.samples, separate_areas = F, separate_affiliations = T)
+  prop.sample.identical_areas <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+                                                            feature.name = feature.name, 
+                                                            n.samples = n.samples, separate_areas = F, separate_affiliations = F, identical_areas = T)
+  
+  passive.const.df <- my_data %>% select(feature.name, 'language', 'area', 'affiliation') %>% drop_na()
+  
+  plot(density(prop.sample.separate_affiliation), xlim= c(0, 1), ylim = c(0, ylim), col = 2, lwd = 1.5, main = feature.name)
+  lines(density(prop.sample),  col = 1, lwd = 1.5)
+  lines(density(prop.sample.identical_areas),  col = 3, lwd= 1.5)
+  points(x = pairwise_comparison(feature = passive.const.df[,feature.name], area = passive.const.df$area, 
+                                 name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+                                 separate_affiliations = F, separate_areas = F), y = ylim/2.5, type = 'h', col = 5, lty = 2, lwd = 2)
+  points(x = pairwise_comparison(feature = passive.const.df[,feature.name], area = passive.const.df$area, 
+                                 name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+                                 separate_affiliations = F, separate_areas = F), y = ylim/2.5, col = 5, lty = 2, lwd = 2)
+  points(x = pairwise_comparison(feature = passive.const.df[,feature.name], area = passive.const.df$area, 
+                                 name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+                                 separate_affiliations = T, separate_areas = F), y = ylim/2.5, type = 'h', col = 4, lty = 2, lwd = 2)
+  points(x = pairwise_comparison(feature = passive.const.df[,feature.name], area = passive.const.df$area, 
+                                 name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+                                 separate_affiliations = T, separate_areas = F), y = ylim/2.5, col = 4, lty = 2, lwd = 2)
+  legend(legend = c('wals diff. affiliations', 'wals diff. areas', 'wals same area', 'anea', 'anea diff. affiliations'), 
+         col = c(2,1,3,5,4), lwd = c(1.5, 1.5, 1.5, 2,2), lty = c(1,1,1,2,2), 'topright')
+  
+}
+
+
+#The problem with using less than 1000 n.samples:
+
+par(mfrow = c(1,2))
+compare_proportions('Gender.n', n.samples = 100, ylim = 4)
+compare_proportions('Gender.n', n.samples = 100, ylim = 4)
+
+#Better:
+par(mfrow = c(1,2))
+compare_proportions('Gender.n', n.samples = 5000, ylim = 4)
+compare_proportions('Gender.n', n.samples = 5000, ylim = 4)
+
+compare_proportions('Passive.Constructions', n.samples = 100, ylim = 40)
+compare_proportions('Gender.n', n.samples = 1000, ylim = 4)
+
+
+passive.const.df <- my_data %>% select('Gender.n', 'language', 'area', 'affiliation') %>% drop_na()
+
+pairwise_comparison(feature = passive.const.df[,'Gender.n'], area = passive.const.df$area, 
+                    name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+                    separate_affiliations = F, separate_areas = F)
+                                
+
+
+
+# Investigate passive proportions with larger n.samples
+# prop.sample <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+#                                           feature.name = 'Passive.Constructions', 
+#                                           n.samples = 10000, separate_areas = T, separate_affiliations = F)
+# prop.sample.separate_affiliation <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+#                                                                feature.name = 'Passive.Constructions', 
+#                                                                n.samples = 10000, separate_areas = F, separate_affiliations = T)
+# prop.sample.identical_areas <- sample_pairwise_comparison(reference.dataset = wals, dataset = my_data, 
+#                                                           feature.name = 'Passive.Constructions', 
+#                                                           n.samples = 10000, separate_areas = F, separate_affiliations = F, identical_areas = T)
+# 
+# passive.const.df <- my_data %>% select(Passive.Constructions, language, area, affiliation) %>% drop_na()
+# 
+# # hist(prop.sample, nclass = 100, xlim= c(0, 1), col = rgb(0,.4,.4, .5), freq = F)
+# # hist(prop.sample.separate_affiliation, nclass = 100, xlim= c(0.25, 0.85), col = rgb(.4,0,.4, .5), add = T, freq = F)
+# 
+# plot(density(prop.sample.separate_affiliation), xlim= c(0.25, 1), ylim = c(0, 40), col = 2, lwd = 1.5, main = 'Passive Constructions')
+# lines(density(prop.sample), xlim= c(0.25, 0.85),  col = 1, lwd = 1.5)
+# lines(density(prop.sample.identical_areas), xlim= c(0.25, 0.85),  col = 3, lwd= 1.5)
+# points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area, 
+#                                name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+#                                separate_affiliations = F, separate_areas = F), y = 15, type = 'h', col = 5, lty = 2, lwd = 2)
+# points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area, 
+#                                name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+#                                separate_affiliations = F, separate_areas = F), y = 15, col = 5, lty = 2, lwd = 2)
+# points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area, 
+#                                name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+#                                separate_affiliations = T, separate_areas = F), y = 15, type = 'h', col = 4, lty = 2, lwd = 2)
+# points(x = pairwise_comparison(feature = passive.const.df$Passive.Constructions, area = passive.const.df$area, 
+#                                name = passive.const.df$name, affiliation = passive.const.df$affiliation, 
+#                                separate_affiliations = T, separate_areas = F), y = 15, col = 4, lty = 2, lwd = 2)
+# legend(legend = c('wals diff. affiliations', 'wals diff. areas', 'wals same area', 'anea', 'anea diff. affiliations'), 
+#        col = c(2,1,3,5,4), lwd = c(1.5, 1.5, 1.5, 2,2), lty = c(1,1,1,2,2), 'topright')
+
+
 
