@@ -318,10 +318,10 @@ compare_proportions('Gender.n', n.samples = 1000, ylim = 4)
 
 #Get a quick overview over percentage of proportions larger than the reference (same area):
 #A lot of features habe to few data for the code to work:
-colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][c(59, 1,2,3,4,5,6,7,8,11,19,20,22,42,47,50,52,54,55,56,57)]
+colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][c(59, 1,2,3,4,5,6,7,8,11,15,19,20,22,42,47,50,52,54,55,56,57)]
 larger.prop <- c()
-n.samples.overview <- 50
-for(u in colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][-c(59, 1,2,3,4,5,6,7,8,11,19,20,22,42,47,50,52,54,55,56,57)]){
+n.samples.overview <- 500
+for(u in colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][-c(59, 1,2,3,4,5,6,7,8,11,15,19,20,22,42,47,50,52,54,55,56,57)]){
   print(u)
   prop.sample <- sample_pairwise_comparison(reference.dataset = reference, dataset = my_data, 
                                             feature.name = u, n.samples = n.samples.overview, separate_areas = F, 
@@ -335,8 +335,8 @@ for(u in colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][-c
   
   larger.prop <- c(larger.prop, length(which(prop.sample > prop.data))/n.samples.overview)
 }
-results <- data.frame(feature = colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][-c(59, 1,2,3,4,5,6,7,8,11,19,20,22,42,47,50,52,54,55,56,57)], percentage = larger.prop*100)
-results
+results <- data.frame(feature = colnames(my_data)[which(colnames(my_data) %in% colnames(reference))][-c(59, 1,2,3,4,5,6,7,8,11,15,19,20,22,42,47,50,52,54,55,56,57)], percentage = larger.prop*100)
+results[38:74,]
 
 
 
