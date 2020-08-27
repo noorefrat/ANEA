@@ -139,7 +139,7 @@ anea.miss = as.matrix(1*is.na(anea[-which(duplicated(anea$language)),cols_info])
 # rownames(anea.miss) <- anea$type[-which(duplicated(anea$language))]
 # rownames(anea.miss) <- anea$language[-which(duplicated(anea$language))]
 pheatmap(t(anea.miss),cluster_rows=T, cluster_cols=T, legend = FALSE, cex = .9,
-         color = c(colors()[412], colors()[616])) #red is missing
+         color = c("olivedrab", "chocolate1")) #red is missing
 pheatmap(t(anea.miss),cluster_rows=T, cluster_cols=T, legend = FALSE, cex = .9,
          color = c(colors()[412], colors()[563])) #red is missing
 
@@ -211,11 +211,13 @@ anea.syntax <- anea.syntax[-which(rowSums(as.matrix(1*!is.na(anea.syntax[,-c(1:7
 pheatmap(t(as.matrix(1*is.na(anea.syntax[,-c(1:8)]))), legend = FALSE, cluster_cols = F, cluster_rows = F) 
 
 #Throwing away from complete anea
-table(rowSums(as.matrix(1*!is.na(anea[,-c(1:7,29:32, 55)]))))
-threshold <- 2
+table(rowSums(as.matrix(1*!is.na(anea[,-c(1:7,29:32, 59)]))))
+threshold <- 1
 #putting away "NumClass.n", "NPHeadlessness", "NPMarking" ,"NPAgrCat" = cols 29:32
 stopifnot("no observations below threshold" = length(which(rowSums(as.matrix(1*!is.na(anea[,-c(1:7, 59, 29:32)]))) <= threshold)) != 0)
 anea.complete <- anea[-which(rowSums(as.matrix(1*!is.na(anea[,-c(1:7, 59, 29:32)]))) <= threshold),]
+pheatmap(t(1*is.na(anea.complete[,-c(1:7, 59, 29:32)])),cluster_rows=T, cluster_cols=T, legend = FALSE, cex = .9,
+         color = c("olivedrab", "chocolate4")) #red is missing
 pheatmap(t(as.matrix(1*is.na(anea.complete[,-c(1:7, 59, 29:32)]))), legend = TRUE, cluster_cols = F, cluster_rows = F) 
 
 #Impute missing values:
