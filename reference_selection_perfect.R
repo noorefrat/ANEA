@@ -114,6 +114,10 @@ reference <- merge(wals, autotyp, all = T, by = c('language', 'glottocode', 'are
 
 non_feature_columns <- -c(1:6, 58:59)
 reference.data <- reference[,colnames(reference) %in% colnames(my_data)]
+reference.data$feature.sum<- rowSums(1*!is.na(as.matrix(reference.data[,non_feature_columns])))
+reference.data <- reference.data %>% group_by(language) %>% 
+  mutate(max_features = case_when(feature.sum == max(feature.sum) ~ 1, TRUE ~ 0)) %>%  
+  filter(max_features == 1)
 reference.data <- reference.data[-which(duplicated(reference.data$language)),]
 
 table(rowSums(1*!is.na(as.matrix(reference.data[,non_feature_columns]))))
