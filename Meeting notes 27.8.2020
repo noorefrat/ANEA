@@ -1,0 +1,27 @@
+Meeting notes, 27.8.2020:
+
+Options: 
+
+1. Counts: Is there a distinct value count in the ANEA compared to the rest of the world?
+Test: Chi square/log linear
+
+2. Pair-wise: Are pairs of languages in ANEA more similar to each other than randomly selected pairs in the world?
+How: 
+sample languages from the reference dataset so that they match the family distribution in ANEA dataset. 
+take all language pairs from that distribution (same area = FALSE) and assign same/different value to each pair with regard to each linguistic feature. 
+repeat this sampling procedure many times.
+result: a distribution of the proportions of same/different from the reference samples, for each linguistic feature. 
+sample language pairs from ANEA dataset such that each language is sampled once. 
+assign same/different value to each pair with regard to each linguistic feature. 
+repeat this sampling procedure many times.
+result: a distribution of the proportions of same/different from the reference samples, for each linguistic feature. 
+Test: Chi square
+
+3. Distance based pRDA: Are the distances between ANEA languages smaller than in the rest of the world?
+
+4. Sbayes: bayesian mixture model that explains each data point in a sample by a combination of three components: inheritance, global bias, contact. 
+We can add as priors routes/terrains etc. 
+
+Conclusions 
+For the counts data we can use either log-linear, dirichlet regression, or mixture models (such as Sbayes) 
+For the distances data (which, in order to condition on dependency we need a method that keeps the vector’s order constant -- doing a pca at the beginning can solve that) we can use the prda.
